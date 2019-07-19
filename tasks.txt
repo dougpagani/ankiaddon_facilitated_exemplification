@@ -1,0 +1,8 @@
+- grab one default for each, queue up browser for another possible example
+    - google image search
+    - spanish examples
+    - forvo
+- strip superfluous articles
+    - un, una, unos, unas, las, los
+- forvo retry -- pull another example
+- separate this repo, push to github
