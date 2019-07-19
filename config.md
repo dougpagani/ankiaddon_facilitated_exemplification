@@ -1,6 +1,4 @@
-**YOU NEED TO RESTART ANKI FOR CHANGES TO TAKE EFFECT!**
-
-
+### Restart for these changes to work
 **patternSourceFields**: List of fields to consider for the Forvo search phrase. The first field in this list that matches will be used.
 
 **forvoLookupUrl**: URL to be opened in the browser when searching. The placeholder {phrase} will be replaced by the search phrase.
