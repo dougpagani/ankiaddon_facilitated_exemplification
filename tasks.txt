@@ -6,3 +6,11 @@
     - un, una, unos, unas, las, los
 - forvo retry -- pull another example
 - separate this repo, push to github
+- IPA
+    - also possible is using wiktionary
+    - https://www.google.com/search?q=api+for+getting+ipa+of+words&oq=api+for+getting+ipa+of+words&aqs=chrome..69i57.6447j0j7&sourceid=chrome&ie=UTF-8
+    - https://github.com/alormil/ipa-rest-api
+- establish links:
+    - imgs 
+    - examples
+    - definitions
