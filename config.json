@@ -1,9 +1,48 @@
 {
-    "patternSourceFields" : ["Expression", "Kanji", "Kanji Word", "Front"],
-    "forvoLookupUrl" : "https://forvo.com/word/{phrase}/#ja",
-    "watchedDownloadDirectories" : [],
-    "forvoFilePattern" : "^pronunciation_.*\\.mp3$",
-    "forvoEditorButtonShortcut" : "F10",
-    "autoConfirmFirstDownload" : false,
-    "autoPromptOnEmptyFields" : []
+  "patternSourceFields": [
+    "Target",
+    "Front"
+  ],
+  "forvoLookupUrl": "https://forvo.com/word/{phrase}/#ja",
+  "facilitatedFields": [
+    {
+      "type": "sentence",
+      "urlFormat": "https://www.spanishdict.com/examples/{phrase}",
+      "filePattern": "^",
+      "insertFields": []
+    },
+    {
+      "type": "image",
+      "urlFormat": "https://www.google.com/search?q={phrase}&source=lnms&tbm=isch",
+      "filePattern": "^.*\\.jpeg",
+      "insertFields": []
+    },
+    {
+      "type": "sound",
+      "urlFormat": "https://forvo.com/search/{phrase}/es/",
+      "insertFields": []
+    },
+    {
+      "type": "wordInfo",
+      "urlFormat": "https://es.wiktionary.org/wiki/{phrase}",
+      "wordGranularity": true
+      "insertFields": [],
+    }
+
+  ],
+  "wordTrims": [
+    "el",
+    "la",
+    "un",
+    "una",
+    "unos",
+    "unas",
+    "los",
+    "las"
+  ],
+  "watchedDownloadDirectories": [],
+  "forvoFilePattern": "^pronunciation_.*\\.mp.$",
+  "forvoEditorButtonShortcut": "Ctrl+Shift+E",
+  "autoConfirmFirstDownload": true,
+  "autoPromptOnEmptyFields": []
 }
