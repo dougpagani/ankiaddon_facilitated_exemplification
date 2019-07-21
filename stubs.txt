@@ -1,0 +1,28 @@
+- class:DownloaderDialog
+
+- cleanPhrase:
+
+
+- RunForvoDownload
+- selectForvoSearchPhrase
+- RunForvoDownloadFromEditor
+- RunForvoDownloadFromNote
+- onForvoLookupButton
+- addEditorButtons
+
+class:ForvoLookupEditorShortcut
+
+- addEditorShortcuts
+- onEditFocusLost
+- onEditFocusGained
+- RegisterForvoDownloadModule
+
+
+Register Module, 3 hooks:
+- setupEditorButtons: editorButton
+- setupEditorShortcuts: shortcut
+- onEditFocusGained -- for the auto-stuff
+
+editor object is default passed-in
+
+edit._ad
