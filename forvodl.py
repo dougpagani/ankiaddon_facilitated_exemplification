@@ -157,9 +157,25 @@ class DownloaderDialog(QDialog):
                 files.append(file)
         return files
 
+def cleanPhrase(phrase):
+    # guard cond: don't check first word if only one, e.g. "pelota"
+    words = phrase.split(' ', 1)
+    if len(words) == 1:
+        return phrase
+
+    articles = config["wordTrims"]
+    for x in articles:
+        if x == words[0]:
+            # trim only one article
+            return words[1]
+
+    # No article match found
+    return phrase
+
 def RunForvoDownload(phrase, parentWin):
     # Open Forvo in external browser
-    link = config["forvoLookupUrl"].format(phrase=phrase)
+    cleanedPhrase = cleanPhrase(phrase)
+    link = config["forvoLookupUrl"].format(phrase=cleanedPhrase)
     QDesktopServices.openUrl(QUrl(link))
     
     # Show dialog and wait for audio files to be confirmed
@@ -224,11 +240,21 @@ def onForvoLookupButton(editor):
     for file in files:
         editor.addMedia(file)
 
+# Pass-in buttons that already exist, add to them
+# Modify editor with that same button
 def addEditorButtons(buttons, editor):
-    editor._links['forvodl_forvolookup'] = onForvoLookupButton
-    forvoButton = editor._addButton (
-        os.path.join(assetDir, "forvo-button.png"),
-        "forvodl_forvolookup", "Forvo Lookup (" + config["forvoEditorButtonShortcut"] + ")")
+
+    buttonCmd = "forvodl_forvolookup"
+    editor._links[buttonCmd] = onForvoLookupButton
+
+    iconPath = os.path.join(assetDir, "forvo-button.png")
+    shortcutAltText = "Forvo Lookup (" + config["forvoEditorButtonShortcut"] + ")"
+    # adding button
+    forvoButton = editor._addButton(
+        iconPath,
+        buttonCmd,
+        shortcutAltText
+        )
     return buttons + [forvoButton]
 
 # Wrapper class because we need a reference to the editor
@@ -239,67 +265,14 @@ class ForvoLookupEditorShortcut:
     def trigger(self):
         onForvoLookupButton(self.editor)
 
+
+################################################################################
+# Hooks
+################################################################################
 def addEditorShortcuts(cuts, editor):
     shortcut = ForvoLookupEditorShortcut(editor)
     cuts.append((config["forvoEditorButtonShortcut"], shortcut.trigger))
     return cuts
-
-def onEditFocusLost(flag, n, fidx):
-    # NOTE: This is currently disabled. If re-enabled, another config variable name must be chosen
-    
-    if "japanese" not in n.model()['name'].lower():
-        return flag
-    
-    srcFields = config["patternSourceFields"]
-    
-    exprName = None
-    
-    # Find phrase field
-    # Double loop because srcFields is meant to be ordered by priority
-    for fieldCandidate in srcFields:
-        for idx, name in enumerate(mw.col.models.fieldNames(n.model())):
-            if name == fieldCandidate:
-                exprName = name
-                exprIdx = idx
-                break
-    
-    if not exprName:
-        return flag
-    if fidx != exprIdx:
-        return flag
-    
-    targetName = None
-    
-    for targetField in config["autoPromptOnEmptyFields"]:
-        for idx, name in enumerate(mw.col.models.fieldNames(n.model())):
-            if name == targetField:
-                targetName = name
-                targetIdx = idx
-                break
-    
-    if not targetName:
-        return flag
-    if n[targetName] != "":
-        return flag
-    
-    # Hack, because unfortunately, we have no reference to the editor
-    editor = FindFocusedEditor()
-    
-    if editor:
-        files = RunForvoDownloadFromEditor(editor)
-    else:
-        files = RunForvoDownloadFromNote(n, None)
-    
-    soundStr = ""
-    for f in files:
-        fname = mw.col.media.addFile(f)
-        anki.sound.clearAudioQueue()
-        anki.sound.play(fname)
-        soundStr += "[sound:%s]" % fname
-        
-    n[targetName] = soundStr
-    
-    return True
 
 def onEditFocusGained(n, fidx):
     if "japanese" not in n.model()['name'].lower():
@@ -331,8 +304,6 @@ def RegisterForvoDownloadModule():
     addHook("setupEditorButtons", addEditorButtons)
     addHook("setupEditorShortcuts", addEditorShortcuts)
     
+    # Which fields should you try and populate?
     if len(config["autoPromptOnEmptyFields"]) != 0:
-        # NOTE: This was disabled because I deemed it not useful. Config variable was reallocated to the code below
-        #addHook("editFocusLost", onEditFocusLost)
-        
         addHook("editFocusGained", onEditFocusGained)
