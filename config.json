@@ -25,10 +25,9 @@
     {
       "type": "wordInfo",
       "urlFormat": "https://es.wiktionary.org/wiki/{phrase}",
-      "wordGranularity": true
-      "insertFields": [],
+      "wordGranularity": true,
+      "insertFields": []
     }
-
   ],
   "wordTrims": [
     "el",

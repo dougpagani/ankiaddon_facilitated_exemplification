@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+################################################################################
+# pre-commit hook
+# https://stackoverflow.com/questions/26835998/git-hook-to-reject-commits-where-files-contain-a-specific-string
+# More sophisticated script:
+# https://jakemccrary.com/blog/2015/05/31/use-git-pre-commit-hooks-to-stop-unwanted-commits/
+################################################################################
+
+if ! ( jq <config.json &>/dev/null ); then
+    echo >&2 "ERROR: config.json not valid"
+fi
+
+printf >&2 "\033[1;32m%s\033[0m\n" "Pre-commit git-hook run $0"
+
+#  {{{
+
+forbidden_strings=(NOCOMMIT nocommit dontcommit) #TODO
+for f_string in "${forbidden_strings[@]}"; do
+    if (git diff --cached | grep -q -F "$f_string"); then
+        echo >&2 "ERROR: forbidden string detected: [${f_string}]" 
+        exit -1
+    fi
+done
+
+
+# wont work b/c different version of 
+if false; then
+FILES_PATTERN='\.rb(\..+)?$'
+FORBIDDEN='NOCOMMIT'
+git diff --cached --name-only | \
+  grep -spec/ | \
+  grep -E $FILES_PATTERN | \
+  xargs grep --with-filename -n $FORBIDDEN && echo "COMMIT REJECTED Found '$FORBIDDEN' references. Please remove them before commiting" && exit 1
+fi
+# }}}
