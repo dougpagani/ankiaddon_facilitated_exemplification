@@ -1,5 +1,6 @@
 # forvodl.py
 ################################################################################
+print("asdf")
 
 import re
 from aqt import mw
@@ -172,11 +173,25 @@ def cleanPhrase(phrase):
     # No article match found
     return phrase
 
+def OpenWindows(rawphrase, parentWin):
+    phrase = cleanPhrase(rawphrase)
+    contexts = config["facilitatedFields"] # TODO what data type is this?
+    for linkTemplate in contexts:
+        link = linkTemplate.format(phrase=cleanedPhrase)
+        QDesktopServices.openUrl(QUrl(link))
+    
+    # Show dialog and wait for audio files to be confirmed
+    dialog = DownloaderDialog(parentWin) # an instance of a dialog
+    if dialog.exec_(): # TODO: where does this exec come from?
+        return dialog.getAudioFiles()
+    return []
+
 def RunForvoDownload(phrase, parentWin):
     # Open Forvo in external browser
     cleanedPhrase = cleanPhrase(phrase)
     link = config["forvoLookupUrl"].format(phrase=cleanedPhrase)
     QDesktopServices.openUrl(QUrl(link))
+    QDesktopServices.openUrl(QUrl("https://yahoo.com"))
     
     # Show dialog and wait for audio files to be confirmed
     dialog = DownloaderDialog(parentWin)
